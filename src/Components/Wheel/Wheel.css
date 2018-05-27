@@ -16,6 +16,20 @@
     text-align: left;
 }
 
-.wheel__wrapper svg {
+.wheel__wrapper g {
+    position: relative;
+}
 
+.wheel__wrapper path:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.wheel__wrapper textPath {
+    padding-top: 35px;
+    font-size: 30px;
+    color: #fff;
+    position: absolute;
+    top: 20%;
+    left: 30%;
 }
