@@ -1,0 +1,21 @@
+.wheel__wrapper {
+    position: relative;
+}
+
+.wheel__wrapper {
+    width: 575px;
+    height: 575px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.wheel__marker {
+    position: absolute;
+    top: 45%;
+    left: -40%;
+    text-align: left;
+}
+
+.wheel__wrapper svg {
+
+}

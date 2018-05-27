@@ -1,21 +1,35 @@
-import React, { Component } from 'react';
+import React from 'react';
 
+export default function Input({ priority, updateInput, segmentNo, value, updatePriority }) {
+  const classPrefix= "entry-form__";
 
-class Input extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-  render() {
-    return (
-      <div className="entry-form">
-        <button> - </button>
-        <input type="text" />
-        <span>{0}</span>
-        <button> + </button>
+  return <div className={`${classPrefix}input-wrapper`}>
+  <input type="text" 
+        onChange={(e) => updateInput({
+          value: e.target.value, 
+          segmentNo
+        })}
+        value={value}
+  />
+  { 
+    priority > 0 && <div className={`${classPrefix}priority-wrapper`}>
+      <span>
+          &hearts;
+          { (priority - 1 > 0) && priority - 1}
+          </span>
       </div>
-    );
   }
+  
+  <button className={`${classPrefix}button`}
+          onClick={() => updatePriority({ 
+            priority: 1, 
+            segmentNo
+          })}> &uarr; </button>
+          
+  <button className={`${classPrefix}button`}
+          onClick={() => updatePriority({ 
+            priority: -1, 
+            segmentNo
+          })}> &darr; </button>
+  </div>
 }
-
-export default Input;
