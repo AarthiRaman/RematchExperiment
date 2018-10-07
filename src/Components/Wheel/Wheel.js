@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
+import Rnd from 'react-rnd';
 import Marker from './Marker';
 import './Wheel.css';
 
@@ -35,29 +36,73 @@ const calculateAngle = (totalSections, sectionNo) => {
     }
 };
 
-export default function Wheel({ form, wheel }) {
-    const outerDiameter=575;
-    const validEntries = form.wheel.status ? form.inputs.filter((entry) => entry.value.length > 0 ? entry.value : null) : [];
-    const entryArrays = validEntries.length > 0 ? validEntries.map((entry) => entry.value) : Array(12).fill('Your options');
-    const colorWheel = ['#c51b8a', '#fa9fb5', '#fde0dd', '#f1ddcf', '#ffddf4', '#ffb3de'];
+export default class Wheel extends Component {
+    constructor(props) {
+        super(props);
+        
+        this.state = {
+            rotateX : 0,
+            rotateY: 0
+        };
+    }
 
-    return <div className="wheel__wrapper">
-    <svg width={outerDiameter} height={outerDiameter}>
-        {entryArrays.join(',')}
-           {
-            entryArrays.map((val, i) => <g>
-                <path d={getSectorPath(outerDiameter / 2, outerDiameter / 2, outerDiameter, calculateAngle(entryArrays.length, i).start, calculateAngle(entryArrays.length, i).end)} fill={colorWheel[i % colorWheel.length]}/>
-                <path id={`arc${i}`} d={getTextPath("M 100,200 H 200,300", calculateAngle(entryArrays.length, (i+0.75)).end)} fill={"#000"} />
-                
-                <text>
-                <textPath startOffset={"70%"} href={`#arc${i}`}>
-                  {val}
-                </textPath>
-              </text>
-              </g>
-            )            
-           }
-        </svg>
-        <Marker />
-    </div>
+    rotateWheel = (start) => {
+        var indexVariable = 0;
+        const setState = this.setState;
+        if(start)
+        this.rotateStart = setInterval(() => {
+            indexVariable = ++indexVariable % 360 + 1; // SET { 1-360 }
+            console.log(this.state.rotateX);
+            this.setState({
+                rotateX : indexVariable                
+            })          
+        }, 5);
+
+
+        if(!start) {
+            clearInterval(this.rotateStart);
+        }
+
+    }
+
+    render() {
+        const {
+            form, 
+            wheel
+        } = this.props;
+        const outerDiameter=575;
+        const validEntries = form.wheel.status ? form.inputs.filter((entry) => entry.value.length > 0 ? entry.value : null) : [];
+        const entryArrays = validEntries.length > 0 ? validEntries.map((entry) => entry.value) : Array(12).fill('Your options');
+        const colorWheel = ['#c51b8a', '#fa9fb5', '#fde0dd', '#f1ddcf', '#ffddf4', '#ffb3de'];
+
+        console.log(`rotate(${this.state.rotateX}deg)`)
+        return <div className="wheel__wrapper">
+            <Rnd 
+            onDragStart={() => this.rotateWheel(true)}
+            onDragStop={() => this.rotateWheel(false)}
+            dragAxis='none'>
+            <svg className='wheelSvg'
+            style={{
+                transform: `rotate(${this.state.rotateX}deg)`
+            }}
+             width={outerDiameter} height={outerDiameter}>
+                {entryArrays.join(',')}
+                {
+                    entryArrays.map((val, i) => <g>
+                        <path d={getSectorPath(outerDiameter / 2, outerDiameter / 2, outerDiameter, calculateAngle(entryArrays.length, i).start, calculateAngle(entryArrays.length, i).end)} fill={colorWheel[i % colorWheel.length]}/>
+                        <path id={`arc${i}`} d={getTextPath("M 100,200 H 200,300", calculateAngle(entryArrays.length, (i+0.75)).end)} fill={"#000"} />
+                        
+                        <text>
+                        <textPath startOffset={"70%"} href={`#arc${i}`}>
+                        {val}
+                        </textPath>
+                    </text>
+                    </g>
+                    )            
+                }
+                </svg>
+            </Rnd>
+            <Marker />
+        </div>
+    }
 }
